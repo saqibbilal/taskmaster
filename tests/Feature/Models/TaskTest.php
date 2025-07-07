@@ -36,7 +36,7 @@ class TaskTest extends TestCase
     /**
      * a test to check the default value of a new task
      */
-    public function test_it_creates_a_task_with_incomplete_status(): void
+    public function test_default_task_has_incomplete_status(): void
     {
         $task = Task::factory()->create();
         $this->assertTrue('incomplete'=== $task->status, "incomplete is not the default status of a new task");
@@ -48,8 +48,6 @@ class TaskTest extends TestCase
     public function test_it_creates_a_task_with_title(): void
     {
         $user = User::factory()->create();
-
-
         $task = Task::create([
             'user_id' => $user->id,
             'title' => "Write unit tests",
@@ -60,6 +58,20 @@ class TaskTest extends TestCase
 
         $this->assertEquals('Write unit tests', $task->title);
         $this->assertTrue($task->description == "This is a dummy description", "description was not set properly");
+    }
+
+    public function test_task_is_stored()
+    {
+        // save a task through the task controller
+        $task = Task::factory()->create();
+        $tasker = new TaskController();
+        $tasker->store($task);
+        $this->assertDatabaseHas('tasks', [
+            'title' => $task->title,
+            'description' => $task->description,
+            'status' => $task->status,
+            'priority' => $task->priority,
+        ]);
     }
 
 

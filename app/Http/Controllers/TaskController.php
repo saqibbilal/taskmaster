@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\task;
-use App\Http\Requests\StoretaskRequest;
-use App\Http\Requests\UpdatetaskRequest;
+use App\Models\Task;
+use App\Http\Requests\StoreTaskRequest;
+use App\Http\Requests\UpdateTaskRequest;
+use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
@@ -13,7 +14,8 @@ class TaskController extends Controller
      */
     public function index()
     {
-        //
+        $tasks = Task::paginate(10);
+        return view('tasks.index', compact('tasks'));
     }
 
     /**
@@ -21,21 +23,24 @@ class TaskController extends Controller
      */
     public function create()
     {
-        //
+        return view('tasks.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoretaskRequest $request)
+    public function store(StoreTaskRequest $request)
     {
-        //
+        $validated = $request->validated(); // Already validated!
+        $validated['user_id'] = auth()->id();
+        Task::create($validated);
+        return redirect()->route('tasks.index')->with('success', 'Task created successfully!');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(task $task)
+    public function show(Task $task)
     {
         //
     }
@@ -43,24 +48,30 @@ class TaskController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(task $task)
+    public function edit(Task $task)
     {
-        //
+        return view('tasks.edit', compact('task'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatetaskRequest $request, task $task)
+    public function update(UpdateTaskRequest $request, Task $task)
     {
-        //
+        $validated = $request->validated(); // Already validated!
+        $task->update($validated);
+        return redirect()->route('tasks.index')
+            ->with('success', 'Task updated successfully');
+
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(task $task)
+    public function destroy(Task $task)
     {
         //
+        $task->delete();
+        return redirect()->route('tasks.index');
     }
 }
