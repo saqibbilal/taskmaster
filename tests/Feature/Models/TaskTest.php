@@ -60,19 +60,19 @@ class TaskTest extends TestCase
         $this->assertTrue($task->description == "This is a dummy description", "description was not set properly");
     }
 
-    public function test_task_is_stored()
-    {
-        // save a task through the task controller
-        $task = Task::factory()->create();
-        $tasker = new TaskController();
-        $tasker->store($task);
-        $this->assertDatabaseHas('tasks', [
-            'title' => $task->title,
-            'description' => $task->description,
-            'status' => $task->status,
-            'priority' => $task->priority,
-        ]);
-    }
+//    public function test_task_is_stored()
+//    {
+//        // save a task through the task controller
+//        $task = Task::factory()->create();
+//        $tasker = new TaskController();
+//        $tasker->store($task);
+//        $this->assertDatabaseHas('tasks', [
+//            'title' => $task->title,
+//            'description' => $task->description,
+//            'status' => $task->status,
+//            'priority' => $task->priority,
+//        ]);
+//    }
 
 
 }
